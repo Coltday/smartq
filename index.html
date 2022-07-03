@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Reads the XML data using JavaScript</title>
+
+    <!-- CSS -->
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #7ce2af
+        }
+
+        th {
+            background-color: #7c0f65;
+            color: white;
+        }
+
+        .button {
+            position: relative;
+            text-align: center;
+            padding: 20px;
+            border: 4px solid rgb(55, 12, 211);
+            background: rgba(20, 192, 4, 0.5);
+            color: rgb(230, 36, 78);
+            outline: none;
+            border-radius: 30px;
+            font-size: 30px;
+            width: 500px;
+
+        }
+
+        .button:hover {
+            color: black;
+            background: white;
+        }
+    </style>
+
+    <!--JavaScript-->
+    <script>
+        function loadXMLDoc() {
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+
+                // Request finished and response 
+                // is ready and Status is "OK"
+                if (this.readyState == 4 && this.status == 200) {
+                    empDetails(this);
+                }
+            };
+
+            // carlos.xml is the external xml file
+            xmlhttp.open("GET", "employee.xml", true);
+            xmlhttp.send();
+        }
+
+        function empDetails(xml) {
+            var name = document.getElementById('name').value
+            var i;
+            var xmlDoc = xml.responseXML;
+
+            var x = xmlDoc.getElementsByTagName("carlos");
+            var igual = []
+            var ruta = ""
+
+            //identificar si tiene mas childNodes "carlos"
+
+            //Buscar el nombre
+            for (i = 0; i < x.length; i++) {
+                var nodo = x[i].getElementsByTagName("nombre")[0].childNodes[0]
+                var nodoValor = nodo.nodeValue
+                //console.log(nodo.parentNode.nodeName)
+                if (nodoValor == name) {
+                    igual.push(nodoValor)
+
+                    function encontrandoRuta(nodo1) {
+                        var table = `<tr><th>ruta</th></tr>`;
+                        let root = "root"
+                        let actualNodo = nodo1.parentNode
+                        while (root !== actualNodo.nodeName) {
+
+                            var resultado = "<- " + actualNodo.nodeName
+                            table += "<tr><td>" + resultado + "</td></tr>"
+                            console.log(resultado)
+                            actualNodo = actualNodo.parentNode;
+                        }
+                        table += "<tr><td>" + "root" + "</td></tr>"
+                        // Print the xml data in table form
+                        document.getElementById("id").innerHTML = table;
+                        console.log(actualNodo.nodeName)
+                        console.log(resultadoRuta)
+                        //var resultado = nodo.parentNode.nodeName
+                        //ruta += nodo.parentNode.parentNode.parentNode.parentNode.nodeName
+                    }
+                    encontrandoRuta(nodo)
+                }
+
+            }
+            console.log(igual)
+            //console.log(resultado)
+
+
+        }
+
+
+
+
+
+    </script>
+</head>
+
+<body>
+    <center>
+        <label for="name">Escribe el nombre a buscar:</label>
+        <br>
+        <input type="text" id="name" name="name" required minlength="4" size="10">
+        <br>
+        <button type="button" class="button" onclick="loadXMLDoc()">
+            Tabla
+        </button>
+        <button type="button" class="button" onclick="buscarNombre()">
+            Buscar nombre
+        </button>
+    </center>
+
+    <br><br>
+    <table id="id"></table>
+</body>
+
+</html>
